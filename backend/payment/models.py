@@ -56,11 +56,12 @@ class Collectdonate(models.Model):
         blank=False,
         null=False
     )
+    image = models.ImageField()
 
     def __str__(self) -> str:
         return f'{self.name}'
 
-    def save(self, save_model=True, *args, **kwargs):
+    def save(self, *args, **kwargs):
         send_successful_email_message.delay(
             self.user.email,
             self.name)
@@ -100,7 +101,7 @@ class Payment(models.Model):
             self.pay, self.get_date, self.user.username
         )
 
-    def save(self, save_model=True, *args, **kwargs):
+    def save(self, *args, **kwargs):
         self.name.collected_amount += self.pay
         self.name.save()
         send_successful_email_message.delay(

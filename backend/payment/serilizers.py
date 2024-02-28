@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_extra_fields.fields import Base64ImageField
 
 from .models import Collectdonate, Payment
 
@@ -39,6 +40,7 @@ class CollectdonateReadSerializer(serializers.ModelSerializer):
     payments = PaymentReadSerializer(many=True,
                                      read_only=True)
     end_donate_date = serializers.SerializerMethodField()
+    image = serializers.ReadOnlyField(source='image.url')
 
     class Meta:
         model = Collectdonate
@@ -51,6 +53,7 @@ class CollectdonateReadSerializer(serializers.ModelSerializer):
             'collected_amount',
             'end_donate_date',
             'user',
+            'image',
             'payments',
         )
         read_only_fields = [
@@ -62,6 +65,7 @@ class CollectdonateReadSerializer(serializers.ModelSerializer):
 
 
 class CollectdonateSerializer(serializers.ModelSerializer):
+    image = Base64ImageField(use_url=True)
 
     class Meta:
         model = Collectdonate
@@ -71,5 +75,6 @@ class CollectdonateSerializer(serializers.ModelSerializer):
             'occasion',
             'description',
             'free_amount',
+            'image',
             'end_donate_date'
         )
