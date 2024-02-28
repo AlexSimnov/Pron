@@ -6,7 +6,7 @@ from .views import CollectdonateViewSet, PaymentViewSet
 router = DefaultRouter()
 
 
-router.register('collectdate', CollectdonateViewSet)
+router.register('collect-donate', CollectdonateViewSet)
 router.register('payment', PaymentViewSet, basename='payment')
 
 
