@@ -4,6 +4,8 @@ from django.core.validators import MinValueValidator
 
 from django.contrib.auth import get_user_model
 
+from .tasks import send_successful_email_message
+
 User = get_user_model()
 
 
@@ -58,9 +60,11 @@ class Collectdonate(models.Model):
     def __str__(self) -> str:
         return f'{self.name}'
 
-    def save(self, *args, **kwargs):
-        # def send_email
-        return super(Collectdonate, self).save(*args, **kwargs)
+    def save(self, save_model=True, *args, **kwargs):
+        send_successful_email_message.delay(
+            self.user.email,
+            self.name)
+        return super().save(*args, **kwargs)
 
 
 class Payment(models.Model):
@@ -96,7 +100,10 @@ class Payment(models.Model):
             self.pay, self.get_date, self.user.username
         )
 
-    def save(self, *args, **kwargs):
+    def save(self, save_model=True, *args, **kwargs):
         self.name.collected_amount += self.pay
         self.name.save()
-        return super(Payment, self).save(*args, **kwargs)
+        send_successful_email_message.delay(
+            self.user.email,
+            self.name.name)
+        return super().save(*args, **kwargs)
