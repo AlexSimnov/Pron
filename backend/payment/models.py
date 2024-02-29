@@ -12,9 +12,9 @@ User = get_user_model()
 class Collectdonate(models.Model):
 
     CHOICES = (
-        ('wed', 'свадьба'),
-        ('br', 'день рождения'),
-        ('ne', 'новый год')
+        ('свадьба', 'свадьба'),
+        ('день рождения', 'день рождения'),
+        ('новый год', 'новый год')
     )
 
     user = models.ForeignKey(
