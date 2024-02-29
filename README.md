@@ -58,3 +58,13 @@ sudo docker-compose -f l_docker-compose.yml up -d
 YOUR_HOST:YOUR_PORT/api/schema/swagger-ui/
 ```
 
+### Команда для заполнения Mockданными
+(заполняет случайными данными БД)
+
+```
+python manage.py add_mock_data
+```
+
+
+
+
