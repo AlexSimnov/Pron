@@ -5,7 +5,7 @@ from rest_framework import status
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.conf import settings
-from django.views.decorators.vary import vary_on_headers
+from django.views.decorators.vary import vary_on_cookie
 
 from .permissions import AuthorOrReadOnly
 
@@ -24,7 +24,7 @@ class CollectdonateViewSet(viewsets.ModelViewSet):
     permission_classes = [AuthorOrReadOnly]
 
     @method_decorator(cache_page(settings.CACHE_TIME))
-    @method_decorator(vary_on_headers("Authorization"))
+    @method_decorator(vary_on_cookie)
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
@@ -58,7 +58,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         return PaymentSerializer
 
     @method_decorator(cache_page(settings.CACHE_TIME))
-    @method_decorator(vary_on_headers("Authorization"))
+    @method_decorator(vary_on_cookie)
     def list(self, request):
         return super().list(request)
 
