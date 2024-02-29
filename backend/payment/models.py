@@ -92,6 +92,10 @@ class Payment(models.Model):
         auto_now_add=True
     )
 
+    @property
+    def get_date(self):
+        return self.date.strftime('%Y-%m-%d %H:%M')
+
     def __str__(self) -> str:
         return '{}, {}, {}'.format(
             self.pay, self.get_date, self.user.username
