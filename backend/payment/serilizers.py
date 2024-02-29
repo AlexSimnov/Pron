@@ -20,10 +20,15 @@ class PaymentReadSerializer(serializers.ModelSerializer):
         ]
 
     def get_date(self, obj):
+        if isinstance(obj, dict):
+            return obj['date'].strftime('%Y-%m-%d %H:%M')
         return obj.date.strftime('%Y-%m-%d %H:%M')
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    name = serializers.PrimaryKeyRelatedField(
+        queryset=Collectdonate.objects.all(),
+        required=True)
 
     class Meta:
         model = Payment
@@ -37,8 +42,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 class CollectdonateReadSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
-    payments = PaymentReadSerializer(many=True,
-                                     read_only=True)
+    payments = PaymentReadSerializer(many=True)
     end_donate_date = serializers.SerializerMethodField()
     image = serializers.ReadOnlyField(source='image.url')
 
