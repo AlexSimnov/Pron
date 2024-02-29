@@ -1,0 +1,55 @@
+version: '3'
+
+volumes:
+  redis_data:
+  pg_data:
+  static:
+  media:
+
+services:
+  db:
+    image: postgres:13
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - static:/backend_static/
+      - media:/app/media/
+
+  celery-worker:
+    build: ./backend
+    command:
+      - celery
+      - -A
+      - config.celery
+      - worker
+      - -l
+      - INFO
+    depends_on:
+      - backend
+      - redis
+    env_file:
+      - .env
+
+  redis:
+    image: redis:latest
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+  
+  nginx:
+    build: ./nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - backend
+    volumes:
+      - static:/staticfiles/
+      - media:/app/media/
